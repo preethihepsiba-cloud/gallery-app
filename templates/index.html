@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Students</title>
+</head>
+<body>
+    <h2>Registered Students</h2>
+    <a href="/register">Register New Student</a>
+    <hr>
+
+    {% for student in students %}
+        <div>
+            <h3>{{ student.name }}</h3>
+            <p>Email: {{ student.email }}</p>
+            {% if student.photo_url %}
+                <img src="{{ student.photo_url }}" width="150">
+            {% endif %}
+        </div>
+        <hr>
+    {% endfor %}
+</body>
+</html>
