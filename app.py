@@ -10,7 +10,7 @@ app = Flask(__name__)
 BUCKET_NAME = os.environ.get("BUCKET_NAME")
 
 storage_client = storage.Client()
-
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 
 # ---------------- STORAGE ----------------
 
@@ -34,18 +34,23 @@ def index():
     image_urls = []
 
     for blob in blobs:
-        public_url = f"https://storage.googleapis.com/{BUCKET_NAME}/{blob.name}"
-        image_urls.append(public_url)
+        if blob.name.lower().endswith(tuple(ALLOWED_EXTENSIONS)):
+            public_url = f"https://storage.googleapis.com/{BUCKET_NAME}/{blob.name}"
+            image_urls.append(public_url)
 
-    return render_template("index.html", images=image_urls)
-    
+    return render_template("index.html", images=image_urls)  
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
+def allowed_file(filename):
+    return "." in filename and \
+           filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
     if request.method == 'POST':
         photo = request.files.get('photo')
 
-        if photo and photo.filename != "":
+        if photo and photo.filename != "" and allowed_file(photo.filename):
             filename = secure_filename(photo.filename)
             unique_name = str(uuid.uuid4()) + "_" + filename
 
@@ -56,7 +61,7 @@ def register():
 
         return "No file selected", 400
 
-    return render_template("register.html")
+    return render_template("upload.html")
 
 
 if __name__ == '__main__':

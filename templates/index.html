@@ -1,22 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Students</title>
+    <title>Photo Gallery</title>
+    <style>
+        body { font-family: Arial; text-align: center; }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+        img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Registered Students</h2>
-    <a href="/register">Register New Student</a>
-    <hr>
+    <h2>Photo Gallery</h2>
+    <a href="/upload">Upload Photo</a>
 
-    {% for student in students %}
-        <div>
-            <h3>{{ student.name }}</h3>
-            <p>Email: {{ student.email }}</p>
-            {% if student.photo_url %}
-                <img src="{{ student.photo_url }}" width="150">
-            {% endif %}
-        </div>
-        <hr>
-    {% endfor %}
+    <div class="gallery">
+        {% for img in images %}
+            <img src="{{ img }}">
+        {% endfor %}
+    </div>
 </body>
 </html>
